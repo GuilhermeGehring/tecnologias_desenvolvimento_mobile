@@ -1,39 +1,39 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/database/tarefas_dao.dart';
-import 'package:flutter_application_1/models/tarefa.dart';
-import 'package:flutter_application_1/screens/tarefa/form.dart';
+import 'package:flutter_application_1/database/pessoas_dao.dart';
+import 'package:flutter_application_1/models/pessoa.dart';
+import 'package:flutter_application_1/screens/pessoa/form.dart';
 
-class ListaTarefa extends StatefulWidget {
+class ListaPessoa extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ListaTarefaState();
+    return ListaPessoaState();
   }
 }
 
-class ListaTarefaState extends State<ListaTarefa> {
-  TarefasDao _dao = new TarefasDao();
+class ListaPessoaState extends State<ListaPessoa> {
+  PessoasDao _dao = new PessoasDao();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tarefas'),
+        title: Text('Pessoas'),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           final Future future =
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return FormTarefa();
+            return FormPessoa();
           }));
-          future.then((tarefa) {
+          future.then((pessoa) {
             setState(() => {});
           });
         },
       ),
-      body: FutureBuilder<List<Tarefa>>(
+      body: FutureBuilder<List<Pessoa>>(
         initialData: List(),
         future: Future.delayed(Duration(seconds: 1))
             .then((value) => _dao.findAll()),
@@ -57,13 +57,13 @@ class ListaTarefaState extends State<ListaTarefa> {
               break;
             case ConnectionState.done:
               if (snapshot.data != null) {
-                final List<Tarefa> tarefas = snapshot.data;
+                final List<Pessoa> pessoas = snapshot.data;
                 return ListView.builder(
                   itemBuilder: (context, index) {
-                    final Tarefa tarefa = tarefas[index];
-                    return itemTarefa(context, tarefa);
+                    final Pessoa pessoa = pessoas[index];
+                    return itemPessoa(context, pessoa);
                   },
-                  itemCount: tarefas.length,
+                  itemCount: pessoas.length,
                 );
               }
               break;
@@ -74,23 +74,22 @@ class ListaTarefaState extends State<ListaTarefa> {
     );
   }
 
-  Widget itemTarefa(BuildContext context, Tarefa tarefa) {
+  Widget itemPessoa(BuildContext context, Pessoa pessoa) {
     return InkWell(
         child: Container(
             padding: EdgeInsets.all(12.0),
             child: Card(
                 child: ListTile(
                     leading: Icon(Icons.add_alert),
-                    title: Text(tarefa.descricao),
-                    subtitle: Text(tarefa.obs),
+                    title: Text(pessoa.nome),
                     enabled: true,
                     onTap: () {
                       Timer(Duration(milliseconds: 150), () {
                         final Future future = Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return FormTarefa(tarefa: tarefa);
+                          return FormPessoa(pessoa: pessoa);
                         }));
-                        future.then((tarefa) {
+                        future.then((pessoa) {
                           setState(() => {});
                         });
                       });

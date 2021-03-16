@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/editor.dart';
-import 'package:flutter_application_1/database/app.database.dart';
 import 'package:flutter_application_1/database/tarefas_dao.dart';
 import 'package:flutter_application_1/models/tarefa.dart';
 
@@ -103,7 +102,7 @@ class FormTarefaState extends State<FormTarefa> {
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   onPressed: () {
-                    setState(() => _excluir(context));
+                    showAlertDialog(context);
                   }),
               Padding(
                   padding: const EdgeInsets.all(16),
@@ -125,6 +124,41 @@ class FormTarefaState extends State<FormTarefa> {
           0, _controladorCampoDescricao.text, _controladorCampoObservacao.text);
       _dao.save(tarefaCriada).then((id) => Navigator.pop(context));
     }
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancelar"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continuar"),
+      onPressed: () {
+        Navigator.pop(context);
+        setState(() => _excluir(context));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Exclusão de Tarefas"),
+      content: Text("Você deseja excluir esta tarefa?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   void _excluir(BuildContext context) {
